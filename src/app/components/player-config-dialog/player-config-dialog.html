@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{ player ? '用户' + player.id + '信息配置' : '新增选手' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="configForm">
+    <div class="two-columns">
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>组别</mat-label>
+        <input matInput formControlName="group" />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>姓名</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>卡号</mat-label>
+        <input matInput type="number" formControlName="cardNumber" placeholder="起点处刷卡或输入卡号"/>
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>找台顺序</mat-label>
+        <input matInput type="text" formControlName="findSequence" placeholder="英文逗号分隔的列表"/>
+        <mat-error *ngIf="configForm.get('findSequence')?.hasError('required')">
+          找台顺序不能为空
+        </mat-error>
+        <mat-error *ngIf="configForm.get('findSequence')?.hasError('invalidFormat')">
+          请输入有效的数字列表
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+  <div *ngIf="player && records.length > 0" class="records-section">
+    <h3>参赛记录</h3>
+    <table mat-table [dataSource]="records" class="records-table">
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef>时间</th>
+        <td mat-cell *matCellDef="let record">{{ record.time }}</td>
+      </ng-container>
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>类型</th>
+        <td mat-cell *matCellDef="let record">{{ record.type }}</td>
+      </ng-container>
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>数额</th>
+        <td mat-cell *matCellDef="let record">{{ record.type === '判罚' ? record.amount : '' }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton (click)="onCancel()">取消</button>
+  <button matButton color="primary" (click)="onSave()" [disabled]="!configForm.valid">保存</button>
+</mat-dialog-actions>

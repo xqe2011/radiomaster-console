@@ -1,0 +1,39 @@
+<div class="countdown-container">
+  <audio #audioElement></audio>
+  
+  <div class="countdown-wrapper">
+    <svg class="countdown-svg" viewBox="0 0 120 120">
+      <!-- Countdown circle -->
+      <circle
+        class="countdown-circle"
+        cx="60"
+        cy="60"
+        r="50"
+        fill="none"
+        stroke="rgba(0, 0, 0, 0.1)"
+        stroke-width="8"
+      />
+      <circle
+        class="countdown-circle-fill"
+        cx="60"
+        cy="60"
+        r="50"
+        fill="none"
+        stroke="var(--mat-sys-primary, #1976d2)"
+        stroke-width="8"
+        stroke-linecap="round"
+        [attr.stroke-dasharray]="circumference"
+        [attr.stroke-dashoffset]="dashOffset()"
+        transform="rotate(-90 60 60)"
+      />
+    </svg>
+    
+    <div class="countdown-content">
+      <div class="countdown-number">{{ hasTriggered() ? '出发' : countdownSeconds() }}</div>
+      <div class="countdown-label" *ngIf="!hasTriggered()">{{ hasTriggered() ? '' : '秒' }}</div>
+    </div>
+  </div>
+  <button class="play-button" (click)="togglePlayOrCancel()">
+    {{ hasTriggered() ? '退出' : isPlaying() ? '取消' : '播放' }}
+  </button>
+</div>

@@ -1,0 +1,84 @@
+<h2 mat-dialog-title>电台{{ telemetry.foxNumber }}参数远程配置</h2>
+<mat-dialog-content>
+  <form [formGroup]="configForm">
+    <div class="three-columns">
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>GPS卫星数</mat-label>
+        <input matInput [value]="telemetry.gpsInUse" disabled />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>GPS已锁定</mat-label>
+        <input matInput [value]="gpsLockedText" disabled />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>GPS时间</mat-label>
+        <input matInput [value]="telemetry.time" disabled />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>GPS经度</mat-label>
+        <input matInput [value]="telemetry.lon" disabled />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>GPS纬度</mat-label>
+        <input matInput [value]="telemetry.lat" disabled />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>电池电压</mat-label>
+        <input matInput [value]="voltageText" disabled />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>连接方式</mat-label>
+        <input matInput [value]="connectedTypeText" disabled />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>直连中继台数</mat-label>
+        <input matInput [value]="telemetry.connectedFox" disabled />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>电台编号</mat-label>
+        <input matInput type="number" formControlName="foxNumber" />
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>短波开关</mat-label>
+        <mat-select formControlName="rfEnable" [disabled]="configForm.get('foxNumber')?.value > 10">
+          <mat-option [value]="true">开启</mat-option>
+          <mat-option [value]="false">关闭</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>短波频率</mat-label>
+        <input matInput type="number" formControlName="rfFreq" />
+        <p matSuffix class="unit">kHz</p>
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>短波发码间隔</mat-label>
+        <mat-select formControlName="rfDuration">
+          @for (option of rfDurationOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="two-columns">
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>蜂鸣器开关</mat-label>
+        <mat-select formControlName="beep">
+          <mat-option [value]="true">开启</mat-option>
+          <mat-option [value]="false">关闭</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field [floatLabel]="'always'" appearance="outline">
+        <mat-label>NFC模式</mat-label>
+        <mat-select formControlName="nfc">
+          @for (option of nfcOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton (click)="onCancel()">取消</button>
+  <button matButton color="primary" (click)="onSave()" [disabled]="!configForm.valid">保存</button>
+</mat-dialog-actions>

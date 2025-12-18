@@ -1,0 +1,12 @@
+<mat-toolbar class="app-toolbar">
+  <p class="app-title">ARDF</p>
+
+  <a mat-button routerLink="/dashboard" routerLinkActive="nav-active" color="primary">仪表盘</a>
+  <a mat-button routerLink="/scoreboard" routerLinkActive="nav-active" color="primary">分数板</a>
+  <a mat-button routerLink="/players" routerLinkActive="nav-active" color="primary">玩家管理</a>
+  <a mat-button routerLink="/system" routerLinkActive="nav-active" color="primary">系统管理</a>
+</mat-toolbar>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

@@ -1,0 +1,24 @@
+mat-dialog-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.two-columns {
+    padding-top: 1rem !important;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1rem;
+}
+
+.records-section {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.records-section h3 {
+    margin: 0 0 0.1rem 0;
+}
+
+.records-table {
+    width: 100%;
+}

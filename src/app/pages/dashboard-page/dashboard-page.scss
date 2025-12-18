@@ -1,0 +1,78 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.upper-container {
+  display: flex;
+  width: 100%;
+  height: calc(70vh - 64px - 1px);
+  border-bottom: 1px solid var(--mat-sys-outline);
+}
+
+mgl-map {
+  height: 100%;
+  width: 100%;
+}
+
+.fox-list {
+  width: 350px;
+  border-right: 1px solid var(--mat-sys-outline);
+  overflow: auto;
+}
+
+.map {
+  width: calc(100vw - 700px);
+}
+
+.player-list {
+  width: 350px;
+  border-left: 1px solid var(--mat-sys-outline);
+  overflow: auto;
+}
+
+.lower-container {
+  width: 100%;
+  height: calc(30vh);
+  overflow-y: auto;
+}
+
+.log-table {
+  width: 100%;
+  
+  .mat-column-id {
+    width: 5%;
+  }
+  
+  .mat-column-timestamp {
+    width: 7%;
+  }
+  
+  .mat-column-label {
+    width: 5%;
+  }
+  
+  .mat-column-message {
+    width: 83%;
+  }
+}
+
+.button-group {
+  height: 100%;
+  align-items: center;
+}
+
+.fox-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--mat-sys-primary);
+}
+
+.status-icons > .mat-icon {
+  height: fit-content;
+  width: fit-content;
+  font-size: var(--mat-sys-body-medium-size);
+}

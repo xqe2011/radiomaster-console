@@ -1,0 +1,12 @@
+<mat-list-item>
+  <p matListItemAvatar class="fox-number">{{ playerNumber() }}</p>
+  <div matListItemTitle>{{ playerName() }}</div>
+  <div matListItemLine>出发[{{ elapsedTime() }}]分钟，进度[{{ progress() }}]</div>
+  <div matListItemMeta class="button-group">
+    <mat-menu #penaltyMenu="matMenu">
+      <button mat-menu-item (click)="applyPenalty(60)">罚时[1分钟]</button>
+      <button mat-menu-item (click)="applyOut()">罚下</button>
+    </mat-menu>
+    <a mat-button mat-text-button color="primary" [matMenuTriggerFor]="penaltyMenu">判罚</a>
+  </div>
+</mat-list-item>

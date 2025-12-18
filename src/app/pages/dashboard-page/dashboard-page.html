@@ -1,0 +1,79 @@
+<div class="dashboard-container">
+  <div class="upper-container">
+    <mat-list class="fox-list">
+      <app-device-entry
+        *ngFor="let device of devices()"
+        [foxNumber]="(device.lastTelemetry?.foxNumber ?? 0).toString().padStart(2, '0')"
+        [frequency]="(device.lastTelemetry?.rfFreq ?? 0) + 'KHz'"
+        [volumeColor]="device.lastTelemetry?.beep ? 'green' : 'red'"
+        [signalColor]="(device.lastTelemetry?.gpsLocked ?? 0) > 0 ? 'green' : 'red'"
+        [satelliteColor]="(device.lastTelemetry?.gpsInUse ?? 0) >= 8 ? 'green' : (device.lastTelemetry?.gpsInUse ?? 0) >= 4 ? 'orange' : 'red'"
+        [cellTowerColor]="device.connectedType === 'wifi' ? 'green' : device.connectedType === 'lora' ? 'orange' : 'red'"
+        [batteryColor]="(device.lastTelemetry?.voltage ?? 0) >= 5 ? 'green' : (device.lastTelemetry?.voltage ?? 0) >= 3 ? 'orange' : 'red'"
+        [isBeeping]="device.lastTelemetry?.beep ?? false"
+        (configRequested)="onConfigRequested(device)"
+        (beepToggled)="onBeepToggled(device)"
+      ></app-device-entry>
+    </mat-list>
+
+    <div class="map">
+      <mgl-map
+        [style]="'https://demotiles.maplibre.org/style.json'"
+        [zoom]="[mapZoom()]"
+        [center]="mapCenter()"
+      >
+        <mgl-marker
+          *ngFor="let device of devicesWithLocation()"
+          [lngLat]="[device.lastTelemetry?.lon ?? 0, device.lastTelemetry?.lat ?? 0]"
+        >
+          <app-device-position-entry
+            [foxNumber]="(device.lastTelemetry?.foxNumber ?? 0).toString().padStart(2, '0')"
+            (clicked)="onConfigRequested(device)"
+          ></app-device-position-entry>
+        </mgl-marker>
+      </mgl-map>
+    </div>
+
+    <mat-list class="player-list">
+      <app-player-entry
+        *ngFor="let player of runningPlayers()"
+        [playerNumber]="player.id.toString().padStart(3, '0')"
+        [playerName]="player.name"
+        [progress]="player.foundSequence.length + '/' + player.findSequence.length"
+        [elapsedTime]="getElapsedTime(player)"
+        (penaltyRequested)="onPenaltyRequested(player, $event.penaltyTime)"
+        (outRequested)="onOutRequested(player)"
+      ></app-player-entry>
+    </mat-list>
+  </div>
+  <div class="lower-container" #logContainer>
+    <table mat-table [dataSource]="logs()" class="log-table">
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>序号</th>
+        <td mat-cell *matCellDef="let log"> {{ log.id }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="timestamp">
+        <th mat-header-cell *matHeaderCellDef>时间</th>
+        <td mat-cell *matCellDef="let log"> {{ log.timestamp }} </td>
+      </ng-container>
+
+      <!-- Fox Number Column -->
+      <ng-container matColumnDef="label">
+        <th mat-header-cell *matHeaderCellDef>标签</th>
+        <td mat-cell *matCellDef="let log"> {{ log.label }} </td>
+      </ng-container>
+
+      <!-- Text Column -->
+      <ng-container matColumnDef="message">
+        <th mat-header-cell *matHeaderCellDef>信息</th>
+        <td mat-cell *matCellDef="let log"> {{ log.message }} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['id','timestamp','label', 'message']; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['id', 'timestamp', 'label', 'message'];"></tr>
+    </table>
+  </div>
+</div>

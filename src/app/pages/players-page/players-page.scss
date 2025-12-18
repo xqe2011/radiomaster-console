@@ -1,0 +1,76 @@
+.action-button {
+  color: var(--mat-sys-primary);
+}
+
+.button-group {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.players-table-container {
+  height: calc(100vh - 64px - 72px - 1px);
+  overflow: auto;
+  
+  table {
+    table-layout: fixed;
+    width: 100%;
+    
+    th, td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    // 编号列
+    .mat-column-number {
+      width: 5%;
+    }
+    
+    // 组别列
+    .mat-column-group {
+      width: 8%;
+    }
+    
+    // 姓名列
+    .mat-column-name {
+      width: 12%;
+    }
+    
+    // 状态列
+    .mat-column-status {
+      width: 10%;
+    }
+    
+    // 起点时间列
+    .mat-column-startTime {
+      width: 12%;
+    }
+    
+    // 终点时间列
+    .mat-column-endTime {
+      width: 12%;
+    }
+    
+    // 进度列
+    .mat-column-progress {
+      width: 10%;
+    }
+    
+    // 用时列
+    .mat-column-duration {
+      width: 10%;
+    }
+    
+    // 罚时列
+    .mat-column-penaltyTime {
+      width: 8%;
+    }
+    
+    // 操作列
+    .mat-column-action {
+      width: 13%;
+    }
+  }
+}

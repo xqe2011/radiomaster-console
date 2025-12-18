@@ -1,0 +1,17 @@
+<mat-list-item>
+  <p matListItemAvatar class="fox-number">{{ foxNumber() }}</p>
+  <div matListItemTitle>{{ frequency() }}</div>
+  <div matListItemLine class="status-icons">
+    <mat-icon [style.color]="volumeColor()">volume_up</mat-icon>
+    <mat-icon [style.color]="signalColor()">signal_cellular_alt</mat-icon>
+    <mat-icon [style.color]="satelliteColor()">satellite_alt</mat-icon>
+    <mat-icon [style.color]="cellTowerColor()">cell_tower</mat-icon>
+    <mat-icon [style.color]="batteryColor()">battery_4_bar</mat-icon>
+  </div>
+  <div matListItemMeta class="button-group">
+    <a mat-button mat-text-button color="primary" (click)="toggleBeep()">
+      {{ isBeeping() ? '取消鸣叫' : '鸣叫' }}
+    </a>
+    <a mat-button mat-text-button color="primary" (click)="openConfig()">配置</a>
+  </div>
+</mat-list-item>

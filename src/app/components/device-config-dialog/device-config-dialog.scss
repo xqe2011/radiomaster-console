@@ -1,0 +1,23 @@
+mat-dialog-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.three-columns {
+    padding-top: 1rem !important;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 1rem;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1rem;
+}
+
+.unit {
+    margin-right: 1rem;
+    font-size: var(--mat-sys-body-large-size);
+    color: var(--mat-sys-secondary);
+}

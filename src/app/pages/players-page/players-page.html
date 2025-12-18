@@ -1,0 +1,105 @@
+<div class="button-group">
+  <a matButton="outlined" color="primary" (click)="playersGoAfterPrepare()">出发倒计时</a>
+  <a matButton="outlined" color="primary" (click)="playersResetForPrepare()">重置预备区玩家状态</a>
+  <a matButton="outlined" color="primary" (click)="playersPrepare()">全部选手出发预备</a>
+  <a matButton="outlined" color="primary" (click)="playersOutForRunning()">场上选手全部罚下</a>
+  <a matButton="outlined" color="primary" (click)="playersOutForNotPrepare()">未出发选手罚下</a>
+  <a matButton="outlined" color="primary" (click)="gameReset()">重置比赛</a>
+  <a matButton="outlined" color="primary" (click)="onAddPlayerRequested()">新增选手</a>
+  <a matButton="outlined" color="primary" (click)="playersClear()">删除全部选手</a>
+</div>
+
+<mat-divider></mat-divider>
+
+<div class="players-table-container">
+  <table mat-table [dataSource]="playersTableData()" style="width: 100%;">
+    <mat-menu #actionMenu="matMenu">
+      <ng-template matMenuContent let-playerId="playerId">
+        <button mat-menu-item (click)="playerPrepareToGo(playerId)">出发预备</button>
+        <button mat-menu-item (click)="playerGo(playerId)">直接出发</button>
+        <button mat-menu-item (click)="playerFinish(playerId)">到达终点</button>
+        <button mat-menu-item (click)="playerOut(playerId)">罚下选手</button>
+        <button mat-menu-item (click)="playerReset(playerId)">重置状态</button>
+      </ng-template>
+    </mat-menu>
+  
+    <!-- Number Column -->
+    <ng-container matColumnDef="number">
+      <th mat-header-cell *matHeaderCellDef> 编号 </th>
+      <td mat-cell *matCellDef="let row"> {{row.number}} </td>
+    </ng-container>
+  
+    <!-- Group Column -->
+    <ng-container matColumnDef="group">
+      <th mat-header-cell *matHeaderCellDef> 组别 </th>
+      <td mat-cell *matCellDef="let row"> {{row.group}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> 姓名 </th>
+      <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+    </ng-container>
+  
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> 状态 </th>
+      <td
+        mat-cell
+        *matCellDef="let row"
+        [style.color]="
+          row.status === '准备出发' ? 'var(--mat-sys-warning)' :
+          row.status === '出发' ? 'var(--mat-sys-primary)' :
+          row.status === '完成比赛' ? 'var(--mat-sys-success)' :
+          row.status === '罚下' ? 'var(--mat-sys-error)' :
+          ''"
+      > {{row.status}} </td>
+    </ng-container>
+  
+    <!-- Start Time Column -->
+    <ng-container matColumnDef="startTime">
+      <th mat-header-cell *matHeaderCellDef> 起点时间 </th>
+      <td mat-cell *matCellDef="let row"> {{row.startTime}} </td>
+    </ng-container>
+  
+    <!-- End Time Column -->
+    <ng-container matColumnDef="endTime">
+      <th mat-header-cell *matHeaderCellDef> 终点时间 </th>
+      <td mat-cell *matCellDef="let row"> {{row.endTime}} </td>
+    </ng-container>
+  
+    <!-- Duration Column -->
+    <ng-container matColumnDef="duration">
+      <th mat-header-cell *matHeaderCellDef> 用时</th>
+      <td mat-cell *matCellDef="let row"> {{row.duration}} </td>
+    </ng-container>
+  
+    <!-- Penalty Time Column -->
+    <ng-container matColumnDef="penaltyTime">
+      <th mat-header-cell *matHeaderCellDef> 罚时</th>
+      <td
+        mat-cell
+        *matCellDef="let row"
+        [style.color]="row.penaltyTime > 0 ? 'var(--mat-sys-error)' : 'var(--mat-sys-success)'"
+      > {{row.penaltyTime > 0 ? '+' + row.penaltyTime + '秒' : ''}} </td>
+    </ng-container>
+  
+    <!-- 进度 -->
+    <ng-container matColumnDef="progress">
+      <th mat-header-cell *matHeaderCellDef> 进度 </th>
+      <td mat-cell *matCellDef="let row"> {{row.progress}} </td>
+    </ng-container>
+  
+    <!-- 操作 Column -->
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let row">
+        <a mat-button mat-text-button color="primary" [matMenuTriggerFor]="actionMenu" [matMenuTriggerData]="{playerId: row.playerId}">操作</a>
+        <a mat-button mat-text-button color="primary" (click)="onPlayerConfigRequested(row.playerId)">配置</a>
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="['number', 'group', 'name', 'status', 'startTime', 'endTime', 'progress', 'duration', 'penaltyTime', 'action']; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['number', 'group', 'name', 'status', 'startTime', 'endTime', 'progress', 'duration', 'penaltyTime', 'action'];"></tr>
+  </table>  
+</div>
