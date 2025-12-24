@@ -5,6 +5,13 @@
   align-items: center;
   background-color: var(--mat-sys-primary-container);
   color: var(--mat-sys-primary);
+  transition: transform 0.2s ease-in-out;
+  transform: translateY(0);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
 }
 
 .app-title {
@@ -14,4 +21,16 @@
 
 .nav-active {
   background-color: color-mix(in srgb,var(--mat-sys-primary) 10%,transparent);
+}
+
+.app-toolbar-hidden {
+  transform: translateY(-100%);
+}
+
+.app-main {
+  padding-top: 64px; // toolbar height
+}
+
+.app-main-scoreboard {
+  padding-top: 0;
 }

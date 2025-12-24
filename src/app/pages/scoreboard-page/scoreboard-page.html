@@ -1,1 +1,63 @@
-<p>scoreboard-page works!</p>
+<div class="scoreboard-container">
+  <div class="rank-panel">
+    <div class="rank-table-container">
+      <table mat-table [dataSource]="ranks()" class="rank-table">
+        <!-- Rank Column -->
+        <ng-container matColumnDef="rank">
+          <th mat-header-cell *matHeaderCellDef> 名次 </th>
+          <td mat-cell *matCellDef="let row"> {{ row.rank }} </td>
+        </ng-container>
+
+        <!-- Group Column -->
+        <ng-container matColumnDef="group">
+          <th mat-header-cell *matHeaderCellDef> 组别 </th>
+          <td mat-cell *matCellDef="let row"> {{ row.group }} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> 姓名 </th>
+          <td mat-cell *matCellDef="let row"> {{ row.name }} </td>
+        </ng-container>
+
+        <!-- Total Duration Column -->
+        <ng-container matColumnDef="totalDuration">
+          <th mat-header-cell *matHeaderCellDef> 用时 </th>
+          <td mat-cell *matCellDef="let row"> {{ row.totalDuration }} </td>
+        </ng-container>
+
+        <!-- Progress Column -->
+        <ng-container matColumnDef="progress">
+          <th mat-header-cell *matHeaderCellDef> 进度 </th>
+          <td mat-cell *matCellDef="let row"> {{ row.progress }} </td>
+        </ng-container>
+
+        <tr
+          mat-header-row
+          *matHeaderRowDef="['rank', 'group', 'name', 'totalDuration', 'progress']; sticky: true"
+        ></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: ['rank', 'group', 'name', 'totalDuration', 'progress'];"
+        ></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="map-panel">
+    <mgl-map
+      [style]="'https://demotiles.maplibre.org/style.json'"
+      [zoom]="[mapZoom()]"
+      [center]="mapCenter()"
+    >
+      <mgl-marker
+        *ngFor="let device of devicesWithLocation()"
+        [lngLat]="[device.lastTelemetry?.lon ?? 0, device.lastTelemetry?.lat ?? 0]"
+      >
+        <app-device-position-entry
+          [foxNumber]="(device.lastTelemetry?.foxNumber ?? 0).toString().padStart(2, '0')"
+        ></app-device-position-entry>
+      </mgl-marker>
+    </mgl-map>
+  </div>
+</div>

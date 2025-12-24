@@ -36,6 +36,12 @@ export interface Log {
   timestamp: string;
 }
 
+export interface GameSettings {
+  launcherIsEnd: boolean;
+  startAfterLauncherScan: boolean;
+  outWhenFoundIncorrectFox: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -112,6 +118,14 @@ export class BackendService {
 
   gameReset() {
     return this.http.delete<{ success: boolean }>(`http://localhost:3000/api/game`);
+  }
+
+  getGameSettings() {
+    return this.http.get<{ success: boolean, settings: GameSettings }>(`http://localhost:3000/api/game`);
+  }
+
+  setGameSettings(launcherIsEnd: boolean, startAfterLauncherScan: boolean, outWhenFoundIncorrectFox: boolean) {
+    return this.http.put<{ success: boolean }>(`http://localhost:3000/api/game`, { launcherIsEnd, startAfterLauncherScan, outWhenFoundIncorrectFox });
   }
 
   addPlayer(group: string, name: string, cardNumber: number | null, findSequence: number[]) {

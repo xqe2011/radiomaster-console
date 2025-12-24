@@ -1,18 +1,86 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { BackendService, Log } from '../../services/backend-service';
 import * as echarts from 'echarts';
+import { AgGridAngular } from 'ag-grid-angular';
+import { ColDef, GridOptions, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+
+// Register AG Grid modules
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-system-page',
-  imports: [],
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    AgGridAngular,
+  ],
   templateUrl: './system-page.html',
   styleUrl: './system-page.scss',
 })
 export class SystemPage implements OnInit, OnDestroy {
   @ViewChild('chartContainer', { static: true }) chartContainer!: ElementRef;
+  @ViewChild('agGrid') agGrid!: AgGridAngular;
   private chartInstance: echarts.ECharts | null = null;
+  private backendService = inject(BackendService);
+  private fb = inject(FormBuilder);
+
+  settingsForm: FormGroup;
+  saving = false;
+
+  // ag-Grid column definitions
+  columnDefs: ColDef[] = [
+    { field: 'id', headerName: 'ID', width: 100, sortable: true },
+    { field: 'timestamp', headerName: '时间戳', width: 200, sortable: true, valueGetter: (t: unknown) => (
+      new Date((t as any).data.timestamp).toLocaleString('zh-CN', {
+        hour12: false,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).replace(/\//g, '-')
+    )},
+    { field: 'level', headerName: '级别', width: 120, sortable: true },
+    { field: 'label', headerName: '标签', width: 150, sortable: true },
+    { field: 'message', headerName: '消息', flex: 1, sortable: true },
+  ];
+
+  gridOptions: GridOptions = {
+    defaultColDef: {
+      resizable: true,
+      filter: true,
+    },
+    loading: true,
+    theme: 'legacy',
+    animateRows: true,
+    pagination: true,
+    paginationPageSize: 100,
+    paginationPageSizeSelector: [50, 100, 200, 500],
+  };
+
+  constructor() {
+    this.settingsForm = this.fb.group({
+      launcherIsEnd: [false, Validators.required],
+      startAfterLauncherScan: [false, Validators.required],
+      outWhenFoundIncorrectFox: [false, Validators.required],
+    });
+  }
 
   ngOnInit() {
     this.initChart();
+    this.loadGameSettings();
+    this.loadLogs();
   }
 
   ngOnDestroy() {
@@ -107,5 +175,71 @@ export class SystemPage implements OnInit, OnDestroy {
     window.addEventListener('resize', () => {
       this.chartInstance?.resize();
     });
+  }
+
+  private loadGameSettings() {
+    this.backendService.getGameSettings().subscribe({
+      next: (response) => {
+        if (response.success && response.settings) {
+          this.settingsForm.patchValue({
+            launcherIsEnd: response.settings.launcherIsEnd,
+            startAfterLauncherScan: response.settings.startAfterLauncherScan,
+            outWhenFoundIncorrectFox: response.settings.outWhenFoundIncorrectFox,
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Failed to load game settings:', error);
+      },
+    });
+  }
+
+  onSave() {
+    if (this.settingsForm.valid && !this.saving) {
+      this.saving = true;
+      const formValue = this.settingsForm.value;
+      this.backendService
+        .setGameSettings(
+          formValue.launcherIsEnd,
+          formValue.startAfterLauncherScan,
+          formValue.outWhenFoundIncorrectFox
+        )
+        .subscribe({
+          next: (response) => {
+            if (response.success) {
+              console.log('Game settings saved successfully');
+            }
+            this.saving = false;
+          },
+          error: (error) => {
+            console.error('Failed to save game settings:', error);
+            this.saving = false;
+          },
+        });
+    }
+  }
+
+  onReset() {
+    this.loadGameSettings();
+  }
+
+  private loadLogs() {
+    this.backendService.getLogs(160000).subscribe({
+      next: (response) => {
+        if (response.success && response.logs) {
+          // Format timestamps for display
+          this.agGrid.api.setGridOption('rowData', response.logs);
+          this.agGrid.api.setGridOption('loading', false);
+        }
+      },
+      error: (error) => {
+        console.error('Failed to load logs:', error);
+        this.agGrid.api.setGridOption('loading', false);
+      },
+    });
+  }
+
+  onGridReady(params: any) {
+    console.log(params)
   }
 }
