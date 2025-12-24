@@ -238,8 +238,4 @@ export class SystemPage implements OnInit, OnDestroy {
       },
     });
   }
-
-  onGridReady(params: any) {
-    console.log(params)
-  }
 }
